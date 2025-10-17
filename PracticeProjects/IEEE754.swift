@@ -28,20 +28,32 @@ struct Key: View {
 
 struct IEEE754: View {
     @State private var display = ""
+    @State private var displayCopy = ""
+    @State private var displayMove = false
     
     var body: some View {
         VStack {
-            Text(display)
-                .font(.system(size: 25, weight: .semibold, design: .monospaced))
-                .animation(.bouncy, value: display)
-                .contentTransition(.numericText())
-                .padding()
+            ZStack {
+                Text(displayCopy)
+                    .font(.system(size: displayMove ? 15 : 25, weight: .semibold, design: .monospaced))
+                    .animation(.bouncy, value: displayCopy)
+                    .contentTransition(.numericText())
+                    .padding()
+                    .offset(y: displayMove ? -50 : 0)
+                
+                Text(display)
+                    .font(.system(size: 25, weight: .semibold, design: .monospaced))
+                    .animation(.bouncy, value: display)
+                    .contentTransition(.numericText())
+                    .padding()
+            }
             
             HStack {
                 ForEach(1..<4) {
                     let number = String($0)
                     Key(label: number) {
                         display += number
+                        displayCopy += number
                     }
                 }
             }
@@ -51,6 +63,7 @@ struct IEEE754: View {
                     let number = String($0)
                     Key(label: number) {
                         display += number
+                        displayCopy += number
                     }
                 }
             }
@@ -60,6 +73,7 @@ struct IEEE754: View {
                     let number = String($0)
                     Key(label: number) {
                         display += number
+                        displayCopy += number
                     }
                 }
             }
@@ -70,6 +84,11 @@ struct IEEE754: View {
                 Button {
                     if display.count > 0 {
                         display.removeLast()
+                        displayCopy.removeLast()
+                    }
+                    
+                    if display.count == 0 {
+                        displayMove = false
                     }
                 } label: {
                     Image(systemName: "delete.left")
@@ -81,8 +100,35 @@ struct IEEE754: View {
                 .tint(.secondary)
                 .onLongPressGesture(minimumDuration: 2) {
                     display = ""
+                    displayCopy = ""
                 }
             }
+            
+            Button {
+                withAnimation {
+                    displayMove = true
+                }
+                
+                var newDisplay = ""
+                for i in 0..<display.count {
+                    if i % 2 == 0 {
+                        newDisplay += "1"
+                    } else {
+                        newDisplay += "0"
+                    }
+                }
+                
+                display = newDisplay
+            } label: {
+                Text("CONVERT")
+                    .font(.subheadline)
+                    .fontWidth(.expanded)
+                    .fontDesign(.monospaced)
+                    .frame(width: 138)
+            }
+                .buttonBorderShape(.roundedRectangle)
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
         }
     }
 }
