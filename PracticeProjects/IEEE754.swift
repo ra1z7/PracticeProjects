@@ -18,7 +18,7 @@ struct Key: View {
             Text(label)
                 .fontDesign(.monospaced)
                 .fontWeight(.semibold)
-                .frame(width: 25, height: 30)
+                .frame(width: 50, height: 30)
         }
         .buttonStyle(.bordered)
         .buttonBorderShape(.roundedRectangle)
@@ -79,56 +79,75 @@ struct IEEE754: View {
             }
             
             HStack {
-                Key(label: ".") { display += "." }
-                Key(label: "0") { display += "0" }
+                Key(label: ".") {
+                    display += "."
+                    displayCopy += "."
+                }
+                
+                Key(label: "0") {
+                    display += "0"
+                    displayCopy += "0"
+                }
+                
                 Button {
                     if display.count > 0 {
                         display.removeLast()
-                        displayCopy.removeLast()
+                        displayCopy = ""
                     }
                     
                     if display.count == 0 {
+                        // reset position
                         displayMove = false
                     }
                 } label: {
                     Image(systemName: "delete.left")
                         .fontWeight(.semibold)
-                        .frame(width: 25, height: 30)
+                        .frame(width: 50, height: 30)
                 }
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.roundedRectangle)
                 .tint(.secondary)
-                .onLongPressGesture(minimumDuration: 2) {
-                    display = ""
-                    displayCopy = ""
-                }
             }
             
-            Button {
-                withAnimation {
-                    displayMove = true
-                }
-                
-                var newDisplay = ""
-                for i in 0..<display.count {
-                    if i % 2 == 0 {
-                        newDisplay += "1"
-                    } else {
-                        newDisplay += "0"
+            HStack {
+                Button {
+                    withAnimation {
+                        displayMove = true
                     }
+                    
+                    var newDisplay = ""
+                    for i in 0..<display.count {
+                        if i % 2 == 0 {
+                            newDisplay += "1"
+                        } else {
+                            newDisplay += "0"
+                        }
+                    }
+                    display = newDisplay
+                } label: {
+                    Text("CONVERT")
+                        .font(.subheadline)
+                        .fontWidth(.expanded)
+                        .fontDesign(.monospaced)
+                        .frame(width: 132, height: 30)
                 }
-                
-                display = newDisplay
-            } label: {
-                Text("CONVERT")
-                    .font(.subheadline)
-                    .fontWidth(.expanded)
-                    .fontDesign(.monospaced)
-                    .frame(width: 138)
-            }
                 .buttonBorderShape(.roundedRectangle)
                 .buttonStyle(.borderedProminent)
                 .tint(.green)
+                
+                Button {
+                    display = ""
+                    displayCopy = ""
+                    displayMove = false
+                } label: {
+                    Image(systemName: "trash")
+                        .fontWeight(.semibold)
+                        .frame(width: 50, height: 30)
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle)
+                .tint(.red)
+            }
         }
     }
 }
