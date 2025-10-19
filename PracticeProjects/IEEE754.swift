@@ -27,23 +27,30 @@ struct Key: View {
 }
 
 struct IEEE754: View {
-    @State private var display = ""
-    @State private var displayCopy = ""
-    @State private var displayMove = false
+    @State private var inputToConvert = ""
+    
+    @State private var beforeConversionText = ""
+    @State private var convertButtonPressed = false
     
     var body: some View {
         VStack {
             ZStack {
-                Text(displayCopy)
-                    .font(.system(size: displayMove ? 15 : 25, weight: .semibold, design: .monospaced))
-                    .animation(.bouncy, value: displayCopy)
+                Text(beforeConversionText)
+                    .font(.system(size: convertButtonPressed ? 15 : 25, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.secondary)
                     .contentTransition(.numericText())
-                    .padding()
-                    .offset(y: displayMove ? -50 : 0)
+                    .offset(y: convertButtonPressed ? -50 : 0)
+                    .onTapGesture {
+                        withAnimation {
+                            convertButtonPressed = false
+                            inputToConvert = beforeConversionText
+                            beforeConversionText = ""
+                        }
+                    }
                 
-                Text(display)
+                Text(inputToConvert)
                     .font(.system(size: 25, weight: .semibold, design: .monospaced))
-                    .animation(.bouncy, value: display)
+                    .animation(.bouncy, value: inputToConvert)
                     .contentTransition(.numericText())
                     .padding()
             }
@@ -52,8 +59,7 @@ struct IEEE754: View {
                 ForEach(1..<4) {
                     let number = String($0)
                     Key(label: number) {
-                        display += number
-                        displayCopy += number
+                        inputToConvert += number
                     }
                 }
             }
@@ -62,8 +68,7 @@ struct IEEE754: View {
                 ForEach(4..<7) {
                     let number = String($0)
                     Key(label: number) {
-                        display += number
-                        displayCopy += number
+                        inputToConvert += number
                     }
                 }
             }
@@ -72,32 +77,25 @@ struct IEEE754: View {
                 ForEach(7..<10) {
                     let number = String($0)
                     Key(label: number) {
-                        display += number
-                        displayCopy += number
+                        inputToConvert += number
                     }
                 }
             }
             
             HStack {
                 Key(label: ".") {
-                    display += "."
-                    displayCopy += "."
+                    inputToConvert += "."
                 }
                 
                 Key(label: "0") {
-                    display += "0"
-                    displayCopy += "0"
+                    inputToConvert += "0"
                 }
                 
                 Button {
-                    if display.count > 0 {
-                        display.removeLast()
-                        displayCopy = ""
-                    }
+                    beforeConversionText = ""
                     
-                    if display.count == 0 {
-                        // reset position
-                        displayMove = false
+                    if inputToConvert.count > 0 {
+                        inputToConvert.removeLast()
                     }
                 } label: {
                     Image(systemName: "delete.left")
@@ -112,23 +110,24 @@ struct IEEE754: View {
             HStack {
                 Button {
                     withAnimation {
-                        displayMove = true
+                        convertButtonPressed = true
+                        beforeConversionText = inputToConvert
                     }
                     
-                    var newDisplay = ""
-                    for i in 0..<display.count {
+                    // Temporary Value To Show
+                    var convertedValueSample = ""
+                    for i in 0..<inputToConvert.count {
                         if i % 2 == 0 {
-                            newDisplay += "1"
+                            convertedValueSample += "1"
                         } else {
-                            newDisplay += "0"
+                            convertedValueSample += "0"
                         }
                     }
-                    display = newDisplay
+                    inputToConvert = convertedValueSample
+                    
                 } label: {
                     Text("CONVERT")
-                        .font(.subheadline)
-                        .fontWidth(.expanded)
-                        .fontDesign(.monospaced)
+                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
                         .frame(width: 132, height: 30)
                 }
                 .buttonBorderShape(.roundedRectangle)
@@ -136,9 +135,8 @@ struct IEEE754: View {
                 .tint(.green)
                 
                 Button {
-                    display = ""
-                    displayCopy = ""
-                    displayMove = false
+                    inputToConvert = ""
+                    beforeConversionText = ""
                 } label: {
                     Image(systemName: "trash")
                         .fontWeight(.semibold)
