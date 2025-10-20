@@ -7,6 +7,23 @@
 
 import SwiftUI
 
+struct CustomKeyStyle: ViewModifier {
+    let color: Color
+    
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle)
+            .tint(color)
+    }
+}
+
+extension View {
+    func applyCustomKeyStyle(ofColor color: Color) -> some View {
+        self.modifier(CustomKeyStyle(color: color))
+    }
+}
+
 struct Key: View {
     let label: String
     let action: () -> Void
@@ -20,9 +37,7 @@ struct Key: View {
                 .fontWeight(.semibold)
                 .frame(width: 50, height: 30)
         }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.roundedRectangle)
-        .tint(.secondary)
+        .applyCustomKeyStyle(ofColor: .secondary)
     }
 }
 
@@ -102,9 +117,7 @@ struct IEEE754: View {
                         .fontWeight(.semibold)
                         .frame(width: 50, height: 30)
                 }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.roundedRectangle)
-                .tint(.secondary)
+                .applyCustomKeyStyle(ofColor: .red)
             }
             
             HStack {
@@ -130,9 +143,8 @@ struct IEEE754: View {
                         .font(.system(size: 16, weight: .semibold, design: .monospaced))
                         .frame(width: 132, height: 30)
                 }
-                .buttonBorderShape(.roundedRectangle)
                 .buttonStyle(.borderedProminent)
-                .tint(.green)
+                .applyCustomKeyStyle(ofColor: .green)
                 
                 Button {
                     inputToConvert = ""
@@ -142,9 +154,8 @@ struct IEEE754: View {
                         .fontWeight(.semibold)
                         .frame(width: 50, height: 30)
                 }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.roundedRectangle)
-                .tint(.red)
+                .buttonStyle(.borderedProminent)
+                .applyCustomKeyStyle(ofColor: .red)
             }
         }
     }
