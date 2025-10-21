@@ -69,8 +69,8 @@ struct IEEE754: View {
                     .font(.system(size: 25, weight: .semibold, design: .monospaced))
                     .animation(.bouncy, value: inputToConvert)
                     .contentTransition(.numericText())
-                    .padding()
             }
+            .frame(height: 50)
             
             HStack {
                 ForEach(1..<4) {
