@@ -119,9 +119,10 @@ struct IEEE754: View {
                         inputToConvert.removeLast()
                     }
                 } label: {
-                    Image(systemName: "delete.left")
+                    Image(systemName: beforeConversionText.isEmpty ? "delete.left" : "trash")
                         .fontWeight(.semibold)
                         .frame(width: 50, height: 30)
+                        .contentTransition(.symbolEffect(.replace))
                 }
                 .applyCustomKeyStyle(ofColor: .red)
             }
