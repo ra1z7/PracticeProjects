@@ -46,7 +46,7 @@ struct IEEE754: View {
     
     @State private var beforeConversionText = ""
     @State private var beforeConversionTextPosition = 0.0
-    @State private var beforeConversionTextSize = 25.0
+    @State private var beforeConversionTextSize = 0.0
     
     @State private var convertButtonPressed = false
     
@@ -67,8 +67,8 @@ struct IEEE754: View {
                 
                 Text(inputToConvert)
                     .font(.system(size: 25, weight: .semibold, design: .monospaced))
-                    .animation(.bouncy, value: inputToConvert)
                     .contentTransition(.numericText())
+                    .animation(.bouncy, value: inputToConvert)
             }
             .frame(height: 50)
             
@@ -127,35 +127,36 @@ struct IEEE754: View {
                 .applyCustomKeyStyle(ofColor: .red)
             }
             
-            HStack {
-                Button {
-                    withAnimation {
+            Button {
+                withAnimation {
+                    if beforeConversionText.isEmpty {
                         beforeConversionText = inputToConvert
-                        beforeConversionTextPosition = -50.0
-                        beforeConversionTextSize = 15.0
-                        
-                        convertButtonPressed = true
                     }
                     
-                    // Temporary Value To Show
-                    var convertedValueSample = ""
-                    for i in 0..<inputToConvert.count {
-                        if i % 2 == 0 {
-                            convertedValueSample += "1"
-                        } else {
-                            convertedValueSample += "0"
-                        }
-                    }
-                    inputToConvert = convertedValueSample
+                    beforeConversionTextPosition = -50.0
+                    beforeConversionTextSize = 15.0
                     
-                } label: {
-                    Text("CONVERT")
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                        .frame(width: 212, height: 30)
+                    convertButtonPressed = true
                 }
-                .buttonStyle(.borderedProminent)
-                .applyCustomKeyStyle(ofColor: .green)
+                
+                // Temporary Value To Show
+                var convertedValueSample = ""
+                for i in 0..<inputToConvert.count {
+                    if i % 2 == 0 {
+                        convertedValueSample += "1"
+                    } else {
+                        convertedValueSample += "0"
+                    }
+                }
+                inputToConvert = convertedValueSample
+                
+            } label: {
+                Text("CONVERT")
+                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                    .frame(width: 212, height: 30)
             }
+            .buttonStyle(.borderedProminent)
+            .applyCustomKeyStyle(ofColor: .green)
         }
     }
 }
