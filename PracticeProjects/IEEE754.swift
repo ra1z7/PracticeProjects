@@ -46,7 +46,7 @@ struct IEEE754: View {
     
     @State private var beforeConversionText = ""
     @State private var beforeConversionTextPosition = 0.0
-    @State private var beforeConversionTextSize = 0.0
+    @State private var beforeConversionTextSize = 25.0
     
     @State private var convertButtonPressed = false
     
@@ -76,7 +76,9 @@ struct IEEE754: View {
                 ForEach(1..<4) {
                     let number = String($0)
                     Key(label: number) {
-                        inputToConvert += number
+                        if inputToConvert.count < 15 {
+                            inputToConvert += number
+                        }
                     }
                 }
             }
@@ -85,7 +87,9 @@ struct IEEE754: View {
                 ForEach(4..<7) {
                     let number = String($0)
                     Key(label: number) {
-                        inputToConvert += number
+                        if inputToConvert.count < 15 {
+                            inputToConvert += number
+                        }
                     }
                 }
             }
@@ -94,18 +98,24 @@ struct IEEE754: View {
                 ForEach(7..<10) {
                     let number = String($0)
                     Key(label: number) {
-                        inputToConvert += number
+                        if inputToConvert.count < 15 {
+                            inputToConvert += number
+                        }
                     }
                 }
             }
             
             HStack {
                 Key(label: ".") {
-                    inputToConvert += "."
+                    if inputToConvert.count < 15 {
+                        inputToConvert += "."
+                    }
                 }
                 
                 Key(label: "0") {
-                    inputToConvert += "0"
+                    if inputToConvert.count < 15 {
+                        inputToConvert += "0"
+                    }
                 }
                 
                 Button {
