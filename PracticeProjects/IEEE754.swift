@@ -149,16 +149,7 @@ struct IEEE754: View {
                     convertButtonPressed = true
                 }
                 
-                // Temporary Value To Show
-                var convertedValueSample = ""
-                for i in 0..<inputToConvert.count {
-                    if i % 2 == 0 {
-                        convertedValueSample += "1"
-                    } else {
-                        convertedValueSample += "0"
-                    }
-                }
-                inputToConvert = convertedValueSample
+                inputToConvert = convertToBinary(inputToConvert)
                 
             } label: {
                 Text("CONVERT")
@@ -168,6 +159,23 @@ struct IEEE754: View {
             .buttonStyle(.borderedProminent)
             .applyCustomKeyStyle(ofColor: .green)
         }
+    }
+    
+    func convertToBinary(_ number: String) -> String {
+        let parts = number.split(separator: ".")
+        if parts.count == 2 {
+            var wholeNumber = Int(parts[0])!
+            var wholeNumberInBinary = [Int]()
+
+            while wholeNumber != 0 {
+                wholeNumberInBinary.append(wholeNumber % 2)
+                wholeNumber /= 2
+            }
+            
+            return wholeNumberInBinary.reversed().map(String.init).joined(separator: "")
+        }
+        
+        return "1010"
     }
 }
 
