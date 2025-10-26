@@ -163,19 +163,33 @@ struct IEEE754: View {
     
     func convertToBinary(_ number: String) -> String {
         let parts = number.split(separator: ".")
-        if parts.count == 2 {
-            var wholeNumber = Int(parts[0])!
-            var wholeNumberInBinary = [Int]()
+        
+        var wholeNumber = Int(parts[0])!
+        var wholeNumberInBinary = [Int]()
 
-            while wholeNumber != 0 {
-                wholeNumberInBinary.append(wholeNumber % 2)
-                wholeNumber /= 2
-            }
-            
-            return wholeNumberInBinary.reversed().map(String.init).joined(separator: "")
+        while wholeNumber != 0 {
+            wholeNumberInBinary.append(wholeNumber % 2)
+            wholeNumber /= 2
         }
         
-        return "1010"
+        if (parts.count == 2 && Int(parts[1]) == 0) || (parts.count == 1) {
+            return wholeNumberInBinary.reversed().map(String.init).joined(separator: "")
+        } else {
+            var fractionalPart = Double("0.\(parts[1])")!
+            var fractionalPartInBinary = [Int]()
+            
+            while fractionalPart != 0.0 {
+                fractionalPart *= 2
+                if fractionalPart >= 1 {
+                    fractionalPart -= 1
+                    fractionalPartInBinary.append(1)
+                } else {
+                    fractionalPartInBinary.append(0)
+                }
+            }
+            
+            return wholeNumberInBinary.reversed().map(String.init).joined(separator: "") + "." + fractionalPartInBinary.map(String.init).joined(separator: "")
+        }
     }
 }
 
