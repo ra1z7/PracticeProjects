@@ -49,6 +49,7 @@ struct IEEE754: View {
     @State private var beforeConversionTextSize = 25.0
     
     @State private var convertButtonPressed = false
+    @State private var convertToBinary = true
     
     var body: some View {
         VStack {
@@ -158,6 +159,16 @@ struct IEEE754: View {
             }
             .buttonStyle(.borderedProminent)
             .applyCustomKeyStyle(ofColor: .green)
+            
+            HStack {
+                Text("DEC")
+                Toggle("Choose Conversion Type", isOn: $convertToBinary)
+                    .labelsHidden()
+                Text("BIN")
+            }
+            .foregroundStyle(.secondary)
+            .font(.system(size: 14, weight: .semibold, design: .monospaced))
+            .padding()
         }
     }
     
