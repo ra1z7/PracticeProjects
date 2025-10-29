@@ -18,72 +18,87 @@ struct ColoredNumber: View, Identifiable {
             .background(.secondary.opacity(0.2))
             .foregroundStyle(.primary)
             .clipShape(.rect(cornerRadius: 15))
-            .font(.system(size: 12, weight: .bold, design: .monospaced))
+            .font(.system(size: 12, weight: .semibold, design: .monospaced))
     }
 }
 
 struct BubbleSort: View {
-    @State private var numbersToSort = [29, 10, 14, 37, 13, 47, 1]
+    @State private var numbersToSort = [7, 2, 9, 1, 8, 3, 5, 4, 6]
     @State private var sortingState = ""
+    @State private var playEffect = false
     
     var body: some View {
-        Text(sortingState)
-            .font(.system(size: 16, design: .monospaced))
-            .foregroundStyle(.secondary)
-            .frame(width: 170, height: 50)
-            .contentTransition(.numericText())
-            .animation(.default, value: sortingState)
-        
-        HStack {
-            ForEach(numbersToSort, id: \.self) { number in
-                ColoredNumber(number: number)
+        VStack {
+            HStack {
+                Spacer()
+                
+                Image(systemName: "gearshape.fill")
+                    .imageScale(.large)
+                    .symbolEffect(.wiggle, value: playEffect)
+                    .onTapGesture {
+                        playEffect.toggle() // triggers the animation once
+                    }
             }
-        }
-        
-        HStack {
-            Button("Sort") {
-                Task {
-                    sortingState = "Sorting..."
-                    var allNumbersSorted = false
-                    
-                    while !allNumbersSorted {
-                        var sortedCount = 0
+            
+            Text(sortingState)
+                .font(.system(size: 16, design: .monospaced))
+                .foregroundStyle(.secondary)
+                .frame(width: 170, height: 50)
+                .contentTransition(.numericText())
+                .animation(.default, value: sortingState)
+            
+            HStack {
+                ForEach(numbersToSort, id: \.self) { number in
+                    ColoredNumber(number: number)
+                }
+            }
+            
+            HStack {
+                Button("Sort") {
+                    Task {
+                        sortingState = "Sorting..."
+                        var allNumbersSorted = false
                         
-                        for i in 0..<numbersToSort.count - 1 {
-                            if numbersToSort[i] < numbersToSort[i + 1] {
-                                sortedCount += 1
-                                continue
-                            } else {
-                                let temp = numbersToSort[i]
-                                withAnimation {
-                                    numbersToSort[i] = numbersToSort[i + 1]
-                                    numbersToSort[i + 1] = temp
+                        while !allNumbersSorted {
+                            var sortedCount = 0
+                            
+                            for i in 0..<numbersToSort.count - 1 {
+                                if numbersToSort[i] < numbersToSort[i + 1] {
+                                    sortedCount += 1
+                                    continue
+                                } else {
+                                    let temp = numbersToSort[i]
+                                    withAnimation {
+                                        numbersToSort[i] = numbersToSort[i + 1]
+                                        numbersToSort[i + 1] = temp
+                                    }
+                                    
+                                    try? await Task.sleep(for: .seconds(0.5))
                                 }
-                                
-                                try? await Task.sleep(for: .seconds(1))
                             }
-                        }
-                        
-                        if sortedCount == numbersToSort.count - 1 {
-                            sortingState = "Sorting Complete"
-                            allNumbersSorted = true
+                            
+                            if sortedCount == numbersToSort.count - 1 {
+                                sortingState = "Sorting Complete"
+                                allNumbersSorted = true
+                            }
                         }
                     }
                 }
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.blue)
-            
-            Button("Shuffle") {
-                withAnimation {
-                    sortingState = ""
-                    numbersToSort.shuffle()
+                .buttonStyle(.borderedProminent)
+                .tint(.primary)
+                
+                Button("Shuffle") {
+                    withAnimation {
+                        sortingState = ""
+                        numbersToSort.shuffle()
+                    }
                 }
             }
+            .padding()
+            .fontDesign(.monospaced)
             .buttonStyle(.bordered)
-            .tint(.orange)
+            .tint(.secondary)
         }
-        .padding()
     }
 }
 
